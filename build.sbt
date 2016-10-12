@@ -1,8 +1,11 @@
+assemblyShadeRules in assembly := Seq(
+  ShadeRule.rename("com.fasterxml.jackson.core.**" -> "shaded.@1").inAll
+)
 
 lazy val commonSettings = Seq(
   organization := "com.kjetland",
   organizationName := "mbknor",
-  version := "1.0.8-SNAPSHOT",
+  version := "1.0.8-shaded",
   scalaVersion := "2.11.8",
   crossScalaVersions := Seq("2.10.4", "2.11.8"),
   publishMavenStyle := true,

@@ -2,6 +2,14 @@ assemblyShadeRules in assembly := Seq(
   ShadeRule.rename("com.fasterxml.jackson.core.**" -> "shaded.@1").inAll
 )
 
+artifact in (Compile, assembly) := {
+  val art = (artifact in (Compile, assembly)).value
+  art.copy(`classifier` = Some("assembly"))
+}
+
+addArtifact(artifact in (Compile, assembly), assembly)
+
+
 lazy val commonSettings = Seq(
   organization := "com.kjetland",
   organizationName := "mbknor",
@@ -11,6 +19,7 @@ lazy val commonSettings = Seq(
   publishMavenStyle := true,
   publishArtifact in Test := false,
   pomIncludeRepository := { _ => false },
+  isSnapshot := true,
 //  publishTo := {
 //    val nexus = "http://nexus.nextgentel.net/content/repositories/"
 //    if (isSnapshot.value)
@@ -29,18 +38,18 @@ lazy val commonSettings = Seq(
   homepage := Some(url("https://github.com/mbknor/mbknor-jackson-jsonSchema")),
   licenses := Seq("MIT" -> url("https://github.com/mbknor/mbknor-jackson-jsonSchema/blob/master/LICENSE.txt")),
   startYear := Some(2016),
-  pomExtra := (
-      <scm>
-        <url>git@github.com:mbknor/mbknor-jackson-jsonSchema.git</url>
-        <connection>scm:git:git@github.com:mbknor/mbknor-jackson-jsonSchema.git</connection>
-      </scm>
+  pomExtra :=
+    <scm>
+      <url>git@github.com:mbknor/mbknor-jackson-jsonSchema.git</url>
+      <connection>scm:git:git@github.com:mbknor/mbknor-jackson-jsonSchema.git</connection>
+    </scm>
       <developers>
         <developer>
           <id>mbknor</id>
           <name>Morten Kjetland</name>
           <url>https://github.com/mbknor</url>
         </developer>
-      </developers>),
+      </developers>,
   compileOrder in Test := CompileOrder.Mixed,
   javacOptions ++= Seq("-source", "1.8", "-target", "1.8"),
   scalacOptions ++= Seq("-unchecked", "-deprecation")
@@ -69,5 +78,5 @@ lazy val deps  = Seq(
 lazy val root = (project in file("."))
   .settings(name := "mbknor-jackson-jsonSchema")
   .settings(commonSettings: _*)
-  .settings(libraryDependencies ++= (deps))
+  .settings(libraryDependencies ++= deps)
 
